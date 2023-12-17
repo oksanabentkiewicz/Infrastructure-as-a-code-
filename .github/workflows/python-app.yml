@@ -13,9 +13,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./example-app
 
     steps:
     - name: Checkout repository
@@ -27,7 +24,9 @@ jobs:
         python-version: '3.10'
 
     - name: Install Poetry
-      uses: snok/install-poetry@v1
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        export PATH=$HOME/.poetry/bin:$PATH
 
     - name: Cache build venv
       id: cached-poetry-dependencies
@@ -55,7 +54,9 @@ jobs:
         python-version: '3.10'
 
     - name: Install Poetry
-      uses: snok/install-poetry@v1
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        export PATH=$HOME/.poetry/bin:$PATH
 
     - name: Cache build venv
       id: cached-poetry-dependencies
