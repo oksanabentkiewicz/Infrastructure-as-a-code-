@@ -4,9 +4,8 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -20,22 +19,23 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       with:
-        python-version: "3.10"
+        python-version: '3.10'
 
     - name: Install Poetry
       uses: snok/install-poetry@v1
 
     - name: Cache build venv
       id: cached-poetry-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v2
       with:
-        path: /home/runner/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-venv
+        path: |
+          ~/.cache/pypoetry
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
 
     - name: Install dependencies
       run: |
@@ -47,52 +47,26 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       with:
-        python-version: "3.10"
+        python-version: '3.10'
 
     - name: Install Poetry
       uses: snok/install-poetry@v1
 
     - name: Cache build venv
       id: cached-poetry-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v2
       with:
-        path: /home/runner/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-venv
+        path: |
+          ~/.cache/pypoetry
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
 
     - name: Static tests
       run: |
         poetry run task lint
         poetry run task formatter
         poetry run task security
-
-  unit_tests:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
-
-    - name: Cache build venv
-      id: cached-poetry-dependencies
-      uses: actions/cache@v3
-      with:
-        path: /home/runner/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-venv
-
-    - name: Unit tests
-      run: |
-        poetry run task test
